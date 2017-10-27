@@ -29,7 +29,7 @@ def _find_towns(data):
             if d['placeDetails']['place']['type'].lower().strip() == 'town':
                 town_data = d
         except KeyError:
-            pass
+            continue
         towns.add(town_data['placeDetails']['place']['name'])
     return sorted(towns)
 
