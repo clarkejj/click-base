@@ -1,6 +1,13 @@
 from __future__ import print_function
 import click
+import json
 
+
+def _load_data(f):
+    data = []
+    for line in f.readlines():
+        data.append(json.loads(line))
+    
 
 @click.group()
 def cli():
@@ -8,8 +15,9 @@ def cli():
 
 
 @cli.command()
-def example():
+@click.argument("f", type=click.File('r'))
+def find_towns(f):
     """
-    An example sub-command
+    Find all towns in the given file
     """
-    print("The example command was run")
+    data = _load_data(f)
