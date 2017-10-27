@@ -1,0 +1,24 @@
+
+ . some lines are bad
+
+ . json is "free structure" thing; lines don't all have the same stuff
+
+ . validate records
+
+ . assignments:
+
+ . one:
+
+   - read file, line-by-line
+   - get JSON for each line (some "might" fail ;)
+   - give user a nice message if ^ happens
+
+ . two:
+
+   - data['placeDetails']['place']['type']
+   - find mathes for types of places
+   - find all the "towns"
+
+ . bonus:
+
+   - filter by lon/lat
