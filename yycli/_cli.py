@@ -3,11 +3,36 @@ import click
 import json
 
 
-def _load_data(f):
+class Error(Exception):
+    pass
+
+def _load_data(f, ignore_errors=False):
     data = []
-    for line in f.readlines():
-        data.append(json.loads(line))
-    
+    for n, line in enumerate(f.readlines()):
+        try:
+            data.append(json.loads(line))
+        except ValueError as e:
+            if not ignore_errors:
+                raise Error(
+                    "Error loading '{}' at line {}: {}".format(
+                        f.name, n, e,
+                    )
+                )
+
+    return data
+
+
+def _find_towns(data):
+    towns = []
+    for d in data:
+        try:
+            if d['placeDetails']['place']['type'].lower().strip() == 'town':
+                town_data = d
+        except KeyError:
+            pass
+        towns.append(town_data['placeDetails']['place']['name'])
+    return towns
+
 
 @click.group()
 def cli():
@@ -16,8 +41,23 @@ def cli():
 
 @cli.command()
 @click.argument("f", type=click.File('r'))
-def find_towns(f):
+@click.option(
+    '-i', '--ignore-errors',
+    help='ignore per-line errors in JSON file',
+    is_flag=True,
+)
+def find_towns(f, ignore_errors):
     """
     Find all towns in the given file
     """
-    data = _load_data(f)
+    try:
+        data = _load_data(f, ignore_errors)
+    except Error as e:
+        print("Error: {}".format(e))
+        return 1
+
+    towns = _find_towns(data)
+    print("Found {} towns:".format(len(towns)))
+    for t in towns:
+        print("  {}".format(t))
+
