@@ -51,3 +51,4 @@ def test_find_duplicate_towns():
 
     towns = _find_towns(data)
     assert len(towns) == 1
+    assert towns == ['foo']

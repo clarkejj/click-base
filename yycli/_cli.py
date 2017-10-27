@@ -23,15 +23,15 @@ def _load_data(f, ignore_errors=False):
 
 
 def _find_towns(data):
-    towns = []
+    towns = set()
     for d in data:
         try:
             if d['placeDetails']['place']['type'].lower().strip() == 'town':
                 town_data = d
         except KeyError:
             pass
-        towns.append(town_data['placeDetails']['place']['name'])
-    return towns
+        towns.add(town_data['placeDetails']['place']['name'])
+    return sorted(towns)
 
 
 @click.group()
